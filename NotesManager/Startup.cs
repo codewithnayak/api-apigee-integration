@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace NotesManager
 {
@@ -17,6 +18,16 @@ namespace NotesManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().AddControllersAsServices();
+            services.AddSwaggerGen((options) =>
+            {
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "Notes manager sevice with documents",
+                    Version = "v2",
+                    Description = "Sample service for learning apigee ",
+                });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,6 +44,14 @@ namespace NotesManager
             {
                 endpoints.MapControllers();
             });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.RoutePrefix = string.Empty;
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Document Services");
+            });
+
         }
     }
 }
